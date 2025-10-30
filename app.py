@@ -23,19 +23,25 @@ with open('RF_model.pkl', 'rb') as f:
 def preprocess_and_predict(raw_data: dict):
     df = pd.DataFrame([raw_data])
     df.drop(columns=["day", "month", "job"], axis=1, inplace=True)
+    
     df['marital'] = le_marital.transform(df['marital'])
     df["education"] = le_education.transform(df["education"])
     df["contact"] = le_contact.transform(df["contact"])
     df["poutcome"] = le_poutcome.transform(df["poutcome"])
+    
     df['housing'] = 1 if df['housing'].iloc[0] == 'yes' else 0
     df["loan"] = 1 if df['loan'].iloc[0] == 'yes' else 0
     df['default'] = 1 if df['default'].iloc[0] == 'yes' else 0
+    
     expected_cols = normalisation.feature_names_in_
     df = df[expected_cols]
+    
     x_scaled = normalisation.transform(df)
     x_selected = selector.transform(x_scaled)
+    
     prediction = model.predict(x_selected)
     prediction_proba = model.predict_proba(x_selected)
+    
     result = "yes" if prediction[0] == 1 else "no"
     return result, prediction_proba[0].tolist()
 
@@ -58,5 +64,6 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-if __name__ == '_main_':
-    app.run(host='0.0.0.0', port=5000)
+# FIXED: Changed '_main_' to '__main__' (two underscores on each side)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)
