@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Marketing Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background: #45a049; }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bank Marketing Prediction</h1>
+        <form id="predictionForm">
+            <div class="form-group">
+                <label>Age:</label>
+                <input type="number" id="age" required>
+            </div>
+            <div class="form-group">
+                <label>Job:</label>
+                <input type="text" id="job" placeholder="e.g., admin, technician" required>
+            </div>
+            <div class="form-group">
+                <label>Marital Status:</label>
+                <select id="marital" required>
+                    <option value="">Select...</option>
+                    <option value="single">Single</option>
+                    <option value="married">Married</option>
+                    <option value="divorced">Divorced</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Education:</label>
+                <select id="education" required>
+                    <option value="">Select...</option>
+                    <option value="primary">Primary</option>
+                    <option value="secondary">Secondary</option>
+                    <option value="tertiary">Tertiary</option>
+                    <option value="unknown">Unknown</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Default:</label>
+                <select id="default" required>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Balance:</label>
+                <input type="number" id="balance" required>
+            </div>
+            <div class="form-group">
+                <label>Housing Loan:</label>
+                <select id="housing" required>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Personal Loan:</label>
+                <select id="loan" required>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Contact Type:</label>
+                <select id="contact" required>
+                    <option value="">Select...</option>
+                    <option value="cellular">Cellular</option>
+                    <option value="telephone">Telephone</option>
+                    <option value="unknown">Unknown</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Day:</label>
+                <input type="number" id="day" min="1" max="31" required>
+            </div>
+            <div class="form-group">
+                <label>Month:</label>
+                <select id="month" required>
+                    <option value="">Select...</option>
+                    <option value="jan">January</option>
+                    <option value="feb">February</option>
+                    <option value="mar">March</option>
+                    <option value="apr">April</option>
+                    <option value="may">May</option>
+                    <option value="jun">June</option>
+                    <option value="jul">July</option>
+                    <option value="aug">August</option>
+                    <option value="sep">September</option>
+                    <option value="oct">October</option>
+                    <option value="nov">November</option>
+                    <option value="dec">December</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Duration (seconds):</label>
+                <input type="number" id="duration" required>
+            </div>
+            <div class="form-group">
+                <label>Campaign:</label>
+                <input type="number" id="campaign" required>
+            </div>
+            <div class="form-group">
+                <label>Pdays:</label>
+                <input type="number" id="pdays" required>
+            </div>
+            <div class="form-group">
+                <label>Previous:</label>
+                <input type="number" id="previous" required>
+            </div>
+            <div class="form-group">
+                <label>Previous Outcome:</label>
+                <select id="poutcome" required>
+                    <option value="">Select...</option>
+                    <option value="success">Success</option>
+                    <option value="failure">Failure</option>
+                    <option value="other">Other</option>
+                    <option value="unknown">Unknown</option>
+                </select>
+            </div>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                age: parseInt(document.getElementById('age').value),
+                job: document.getElementById('job').value,
+                marital: document.getElementById('marital').value,
+                education: document.getElementById('education').value,
+                default: document.getElementById('default').value,
+                balance: parseInt(document.getElementById('balance').value),
+                housing: document.getElementById('housing').value,
+                loan: document.getElementById('loan').value,
+                contact: document.getElementById('contact').value,
+                day: parseInt(document.getElementById('day').value),
+                month: document.getElementById('month').value,
+                duration: parseInt(document.getElementById('duration').value),
+                campaign: parseInt(document.getElementById('campaign').value),
+                pdays: parseInt(document.getElementById('pdays').value),
+                previous: parseInt(document.getElementById('previous').value),
+                poutcome: document.getElementById('poutcome').value
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                const resultDiv = document.getElementById('result');
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        <h3>Prediction: ${result.prediction.toUpperCase()}</h3>
+                        <p>Probability No: ${(result.probability_no * 100).toFixed(2)}%</p>
+                        <p>Probability Yes: ${(result.probability_yes * 100).toFixed(2)}%</p>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `<h3>Error:</h3><p>${result.error}</p>`;
+                }
+            } catch (error) {
+                const resultDiv = document.getElementById('result');
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `<h3>Error:</h3><p>${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
