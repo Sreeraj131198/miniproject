@@ -1,18 +1,27 @@
-# Use an official lightweight Python image
-FROM python:3.10-slim
+FROM python:3.9-slim
 
-# Set working directory inside the container
 WORKDIR /app
 
-# Copy all files into the container
-COPY . /app
-
-# Install dependencies
+# Copy requirements first for better caching
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose ports
-# 5000 for Flask, 8501 for Streamlit
-EXPOSE 5000 
+# Copy all application files
+COPY app.py .
+COPY marital.pkl .
+COPY education.pkl .
+COPY contact.pkl .
+COPY poutcome.pkl .
+COPY scaling.pkl .
+COPY feature_selector.pkl .
+COPY RF_model.pkl .
+COPY templates/ templates/
 
-# Run Flask app by default
+# Verify files are copied
+RUN ls -la
+
+# Expose port
+EXPOSE 5000
+
+# Run the app
 CMD ["python", "app.py"]
