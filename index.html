@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank Deposit Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input[type="number"], select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        button { margin-top: 20px; padding: 10px 15px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        #result { margin-top: 30px; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+    <h1>Bank Deposit Prediction Tool</h1>
+    <p>Please enter the client's information to predict if they will subscribe to a term deposit (Feature 'y').</p>
+
+    <form id="predictionForm">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+
+        <label for="balance">Balance:</label>
+        <input type="number" id="balance" name="balance" required>
+
+        <label for="duration">Last Contact Duration (seconds):</label>
+        <input type="number" id="duration" name="duration" required>
+        
+        <label for="marital">Marital Status:</label>
+        <select id="marital" name="marital" required>
+            <option value="married">Married</option>
+            <option value="single">Single</option>
+            <option value="divorced">Divorced</option>
+        </select>
+
+        <label for="education">Education:</label>
+        <select id="education" name="education" required>
+            <option value="primary">Primary</option>
+            <option value="secondary">Secondary</option>
+            <option value="tertiary">Tertiary</option>
+            <option value="unknown">Unknown</option>
+        </select>
+        
+        <label for="housing">Has Housing Loan?</label>
+        <select id="housing" name="housing" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="loan">Has Personal Loan?</label>
+        <select id="loan" name="loan" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        
+        <label for="default">Has Credit in Default?</label>
+        <select id="default" name="default" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        
+        <button type="submit">Get Prediction</button>
+    </form>
+
+    <div id="result">
+        <h2>Prediction Result:</h2>
+        <p>The client is predicted to: <strong id="predictionText">waiting for input...</strong></p>
+        <p>Confidence (Yes): <span id="confidenceYes">N/A</span></p>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop the form from submitting normally
+
+            // 1. Gather all form data into a JavaScript object
+            const formData = new FormData(e.target);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                // Convert numerical inputs back to numbers where appropriate
+                if (key === 'age' || key === 'balance' || key === 'duration') {
+                    data[key] = parseInt(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+
+            // 2. Send the data to the Flask API endpoint
+            fetch('http://127.0.0.1:5000/predict', { // **CHANGE THIS URL IN DEPLOYMENT**
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(result => {
+                // 3. Display the prediction results
+                document.getElementById('predictionText').textContent = result.prediction;
+                document.getElementById('confidenceYes').textContent = (result.probability_yes * 100).toFixed(2) + '%';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('predictionText').textContent = 'Error during prediction.';
+            });
+        });
+    </script>
+
+</body>
+</html>
