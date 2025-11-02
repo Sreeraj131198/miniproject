@@ -163,7 +163,7 @@ docker-compose up
 ![Model Accuracy](screenshots/model_performance2.png)
 
 ### Confusion Matrix
-![Confusion Matrix](screenshots/confusion_matrix.png)
+![Confusion Matrix](screenshots/results.png)
 
 
 
