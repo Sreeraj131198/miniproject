@@ -159,8 +159,8 @@ docker-compose up
 ## 📸 Screenshots
 
 ### Model Performance
-![Model Accuracy](screenshots/model_performance1.png)
-![Model Accuracy](screenshots/model_performance2.png)
+![Model Accuracy](screenshots/modelperformance1.png)
+![Model Accuracy](screenshots/modelperformance2.png)
 
 ### Confusion Matrix
 ![Confusion Matrix](screenshots/results.png)
