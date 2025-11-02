@@ -40,7 +40,7 @@ The dataset contains information about bank clients and their interactions with 
 9. **month** - Last contact month of year (categorical: 'jan', 'feb', 'mar', ..., 'nov', 'dec')
 10. **day_of_week** - Last contact day of the week (categorical: 'mon', 'tue', 'wed', 'thu', 'fri')
 11. **duration** - Last contact duration in seconds (numeric)
-    - ⚠️ **Note:** This attribute highly affects the output target. Duration is not known before a call is performed, so it should be discarded for realistic predictive modeling.
+    
 
 ### Other Attributes:
 12. **campaign** - Number of contacts performed during this campaign (numeric)
